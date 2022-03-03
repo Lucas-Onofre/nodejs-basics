@@ -18,6 +18,7 @@ function verifyIfAccountExists(request, response, next){
 
   request.costumer = costumer;
 
+  //estamos repassando tudo dentro da request
   return next();
 }
 
@@ -49,5 +50,22 @@ app.get("/statement", verifyIfAccountExists, (request, response) =>{
   
   return response.json(costumer.statement);
 });
+
+app.post("/deposit", verifyIfAccountExists, (request, response)=>{
+  const { description, amount } = request.body;
+
+  const { costumer } = request;
+
+  const statementOperation = {
+    description,
+    amount,
+    created_at: new Date(),
+    type: 'credit'
+  }
+
+  costumer.statement.push(statementOperation);
+
+  return response.status(201).send();
+})
 
 app.listen(3333);
