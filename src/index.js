@@ -102,4 +102,16 @@ app.post("/withdraw", verifyIfAccountExists, (request, response) =>{
   return response.status(201).send();
 })
 
+app.get("/statement/:date", verifyIfAccountExists, (request, response) =>{
+  const { costumer } = request;
+  const { date } = request.query;
+
+  const dateFormat = new Date(date + " 00:00");
+
+  // 10/10/2021
+  const statement = costumer.statement.filter(statement => statement.created_at.toDateString() === new Date(dateFormat).toDateString())
+  
+  return response.json(statement);
+});
+
 app.listen(3333);
